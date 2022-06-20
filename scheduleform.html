@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Appointment Form</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="form.css">
+    <meta charset="utf-8">
+	 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+     </head>
+  <body>
+
+ <div class="box">
+
+  <div class="container mt-4 p-4">
+      <div class="row">
+          <div class="col-md-6" >
+
+ <nav id="navbar">
+	<img src="logo.png" width="50px"  height="50px">
+        <h3>Urdaneta City Health Office</h3>
+        <input type="checkbox" id="chkToggle"></input>
+        <label id="#menuIcon" class="navbar-toggle" for="chkToggle">
+            <span class="bars"></span>
+        </label>
+        <ul id="menu">
+            <li><a href="homepage.html">Home</a></li>
+            <li><a href="abt.html">About</a></li>
+            <li><a href="services.html">Services</a></li>
+			<li><a href="userlogin.html">Logout</a></li>
+        </ul>
+
+    </nav>
+		
+						
+			
+              <h2 class="text-center my-4">
+                  Schedule your Appointment
+              </h2>
+              <form>
+                  <div class="form-group row">
+                      <label class="col-sm-4 col-lg-4">
+                           Name
+                      </label>
+                      <div class="col-sm-8 col-lg-8">
+                          <input type="text"id="patient-name"class="form-control"
+                          placeholder="Enter your Name"required>
+                      </div>
+                  </div>
+                  <!---->
+                  <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                        Contact
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <input type="tel"id="contact"class="form-control"
+                        placeholder="Mobile Number"required>
+                    </div>
+                </div>
+                <!---->
+                <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                      Date
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <input type="date"id="date"class="form-control">
+                    </div>
+                </div>
+                <!---->
+                <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                       Time
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <input type="time"id="time"class="form-control">
+                       </div>
+                </div>
+                <!---->
+                <div class="form-group row">
+                    <label class="col-sm-4 col-lg-4">
+                       Service
+                    </label>
+                    <div class="col-sm-8 col-lg-8">
+                        <textarea id="service" class="form-control" required></textarea>
+                    </div>
+					
+					<div class="form-group row justify-content-end">
+                    <div class="col-sm-8 col-lg-8">
+                        <button type="submit"class="btn btn-form">
+                            Confirm
+                        </button>
+                </div>
+                <!---->
+
+
+                   
+
+                    </div>
+                </div>
+
+              </form>
+          </div>
+          <div class="col-md-6">
+              <h2 id="services" class="text-center my-4"></h2>
+              <ul id="consultations"class="list-group"></ul>
+          </div>
+      </div>
+  </div>
+    </div>
+
+</head>
+</body>
+<script type="text/javascript">
+let DB;
+
+let form = document.querySelector('form');
+let patientName = document.querySelector('#patient-name');
+let contact = document.querySelector('#contact');
+let date = document.querySelector('#date');
+let time = document.querySelector('#time');
+let service = document.querySelector('#service');
+let consultations = document.querySelector('#consultations');
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+     let ScheduleDB = window.indexedDB.open('consultations', 1);
+
+
+     ScheduleDB.onerror = function() {
+          console.log('error');
+     }
+
+     ScheduleDB.onsuccess = function() {
+
+          DB = ScheduleDB.result;
+
+          showConsultations();
+     }
+
+   
+     ScheduleDB.onupgradeneeded = function(e) {
+          
+          let db = e.target.result;
+          
+          let objectStore = db.createObjectStore('consultations', { keyPath: 'key', autoIncrement: true } );
+
+        
+          objectStore.createIndex('patientname', 'patientname', { unique: false } );
+          objectStore.createIndex('contact', 'contact', { unique: false } );
+          objectStore.createIndex('date', 'date', { unique: false } );
+          objectStore.createIndex('time', 'time', { unique: false } );
+          objectStore.createIndex('service', 'service', { unique: false } );
+
+
+     }
+
+     form.addEventListener('submit', addConsultations);
+
+     function addConsultations(e) {
+          e.preventDefault();
+          let newConsultation = {
+               patientname : patientName.value,
+               
+             contact : contact.value,
+               date : date.value,
+            time : time.value,
+               service : service.value
+          }
+          
+          let transaction = DB.transaction(['consultations'], 'readwrite');
+          let objectStore = transaction.objectStore('consultations');
+
+          let request = objectStore.add(newConsultation);
+                    request.onsuccess = () => {
+               form.reset();
+          }
+          transaction.oncomplete = () => {
+
+
+               showConsultations();
+          }
+          transaction.onerror = () => {
+
+          }
+
+     }
+     function showConsultations() {
+       
+          while(consultations.firstChild) {
+            consultations.removeChild(consultations.firstChild);
+          }
+         
+          let objectStore = DB.transaction('consultations').objectStore('consultations');
+
+          objectStore.openCursor().onsuccess = function(e) {
+               
+               let cursor = e.target.result;
+               if(cursor) {
+                    let ConsultationHTML = document.createElement('li');
+                    ConsultationHTML.setAttribute('data-consultation-id', cursor.value.key);
+                    ConsultationHTML.classList.add('list-group-item');
+                    
+                 
+                    ConsultationHTML.innerHTML = `  
+                         <p class="font-weight-bold">Patient Name:  <span class="font-weight-normal">${cursor.value.patientname}<span></p>
+                          <p class="font-weight-bold">Contact:  <span class="font-weight-normal">${cursor.value.contact}<span></p>
+                         <p class="font-weight-bold">Date:  <span class="font-weight-normal">${cursor.value.date}<span></p>
+                         <p class="font-weight-bold">Time:  <span class="font-weight-normal">${cursor.value.time}<span></p>
+                         <p class="font-weight-bold">Service:  <span class="font-weight-normal">${cursor.value.service}<span></p>
+                    `;
+
+                    
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.classList.add('btn', 'btn-danger');
+                    cancelBtn.innerHTML = 'Cancel';
+                    cancelBtn.onclick = removeConsultation;
+               
+
+                 
+                    ConsultationHTML.appendChild(cancelBtn);
+                 consultations.appendChild(ConsultationHTML);
+
+                    cursor.continue();
+               } else {
+                    if(!consultations.firstChild) {
+                        services.textContent = 'Your Schedule Appointment';
+                         let noSchedule = document.createElement('p');
+                         noSchedule.classList.add('text-center');
+                         noSchedule.textContent = 'No results Found';
+                      consultations.appendChild(noSchedule);
+                    } else {
+                        services.textContent = 'Your Schedule Appointment'
+                    }
+               }
+          }
+     }
+
+          function removeConsultation(e) {
+       
+          let scheduleID = Number( e.target.parentElement.getAttribute('data-consultation-id') );
+         
+          let transaction = DB.transaction(['consultations'], 'readwrite');
+          let objectStore = transaction.objectStore('consultations');
+         
+          objectStore.delete(scheduleID);
+
+          transaction.oncomplete = () => {
+             
+               e.target.parentElement.parentElement.removeChild( e.target.parentElement );
+
+               if(!consultations.firstChild) {
+                   
+                    services.textContent = 'Your Schedule Appointment';
+                   
+                   let noSchedule = document.createElement('p');
+                  
+                   noSchedule.classList.add('text-center');
+                   
+                   noSchedule.textContent = 'No results Found';
+                
+                    consultations.appendChild(noSchedule);
+               } else {
+                   services.textContent = 'Your Schedule Appointment'
+               }
+          }
+     }
+
+});
+</script>
+ </body>
+</html>

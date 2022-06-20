@@ -1,0 +1,272 @@
+
+body {
+  font-family: arial;
+  padding: 0;
+  margin: 0;
+  background: linear-gradient(to top, rgba(72,209,204) ,rgba(255,255,255,0) 80%), url('banner-1.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+h2 {
+	word-spacing: -0.15em;
+	font-size: 25px;
+	font-weight: 300;
+	color: #3982b8;
+}
+
+/* Mobile */
+
+#navbar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background-color: #3982b8;
+  color: white;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 2em;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+#navbar a {
+  color: white;
+  text-decoration: none;
+}
+
+#navbar #brand,
+#navbar #menuIcon {
+  flex: 1 0 50%;
+}
+
+/* Menu */
+
+.bars {
+  background: white;
+  display: block;
+  height: 3px;
+  position: relative;
+  width: 30px;
+  transition: background 0.2s ease-out;
+}
+.bars::before,
+.bars::after {
+  content: '';
+  background: white;
+  display: block;
+  height: 3px;
+  position: absolute;
+  width: 30px;
+}
+.bars::before {
+  content: '';
+  top: 8px;
+  transition: all 0.2s ease-out;
+}
+.bars::after {
+  content: '';
+  top: -8px;
+  transition: all 0.2s ease-out;
+}
+
+#navbar label.navbar-toggle {
+  cursor: pointer;
+}
+input#chkToggle:checked + label.navbar-toggle > span.bars {
+
+  background-color: #3982b8;
+}
+input#chkToggle:checked + label.navbar-toggle > span.bars:before {
+  transform: rotate(-45deg);
+  top: 0;
+}
+input#chkToggle:checked + label.navbar-toggle > span.bars:after {
+  transform: rotate(45deg);
+  top: 0;
+}
+#chkToggle {
+  display: none;
+}
+#chkToggle:checked ~ ul#menu,
+#chkToggle:checked ~ ul#access {
+
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+#navbar > ul#menu,
+#navbar > ul#access {
+  flex: 0 1 100%;
+  list-style: none;
+  display: none;
+  list-style: none;
+  padding-left: 0;
+  text-align: center;
+  margin: 0px;
+}
+
+#navbar > ul#menu > li,
+#navbar > ul#access > li {
+
+  padding: 5px 0;
+}
+
+@media all and (min-width: 468px) {
+  #navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  #navbar #brand {
+    order: 1;
+    flex-basis: 20%;
+  }
+  #navbar > ul#access {
+    order: 2;
+    flex-basis: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .navbar-toggle,
+  .navbar-toggle .bars {
+    order: 3;
+    float: right;
+    flex-basis: 10%;
+    cursor: pointer;
+  }
+
+  #navbar > ul#menu {
+    order: 4;
+    flex-basis: 100%;
+  }
+
+  #navbar #brand,
+  #navbar > ul#access,
+  .navbar-toggle {
+    justify-content: space-evenly;
+  }
+
+  #chkToggle:checked ~ ul#access {
+    display: flex;
+    flex-direction: row;
+    margin: 0px;
+  }
+  #navbar > ul#access > li {
+    display: block;
+    padding: 0px;
+    margin-left: 15px;
+  }
+}
+
+
+@media all and (min-width: 800px) {
+  #navbar #brand {
+    order: 1;
+    flex-basis: 20%;
+  }
+  #navbar > ul#menu,
+  #chkToggle:checked ~ ul#menu {
+    order: 2;
+    flex-basis: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 0px;
+  }
+
+  #navbar > ul#access {
+    flex-basis: 10%;
+  }
+  #navbar > ul#access > li,
+  #navbar > ul#menu > li {
+    display: block;
+    padding: 0px;
+    margin-left: 20px;
+  }
+
+  .navbar-toggle,
+  .navbar-toggle .bars {
+    display: none;
+  }
+}
+
+#access a.primary {
+  text-decoration: none;
+  padding: 0px 10px;
+  background: #295982;
+  border: 1px solid #295982;
+  border-radius: 50em;
+  border-width: medium;
+}
+
+#access a.primary:hover {
+  text-decoration: none;
+  padding: 0px 10px;
+  background: white;
+  border: 1px solid white;
+  border-radius: 50em;
+  border-width: medium;
+  color: #3982b8;
+}
+
+
+#menu a:hover {
+  color: #d3d3d3;
+}
+
+*{
+  box-sizing: border-box;
+}
+.card-row{
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 10px;
+	position: relative;
+	top: 20px; 
+	width:100%; 
+	text-align:center;
+}
+.card{
+    flex: 0 0 33.33%;
+    max-width: 33.33%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    position:relative;
+
+}
+.card-inner{
+    box-shadow: 0 1px 6px rgba(61, 65, 84, 0.15);
+    min-height: 150px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    border-radius: .5rem;
+    transition: 0.2s ease-in-out;
+    cursor:pointer;
+	background: white;
+}
+
+.card-inner:before {
+    width: 0;
+    transition: 0.2s;
+    z-index: 0;
+    content: "";
+    background-color: #4c86e7;
+    height: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.card:hover .card-inner:before {
+    width: 100%;
+}
+.card:hover .card-inner{
+    top: -2px;
+    box-shadow: 0px 20px 40px 0px rgba(61, 65, 84, 0.15);
+}
